@@ -35,7 +35,26 @@ const obterEndereco = (idUsuario, callback) => {
 
 }
 
-const usuarioPromise = obterUsuario()
+//1 passo adicionar a palabra async -> automaticamente ela retornara uma promise
+main()
+async  function main(){
+    try {
+        const usuario = await obterUsuario()
+        const telefone = await obterTelefone(usuario.id)
+        const endereco = await obterEnderecoAsysn(usuario.id)
+
+        console.log(`
+            Nome: ${usuario.nome},
+            Telefone: (${telefone.ddd}) ${telefone.telefone}
+            Endereco: ${endereco.rua}, ${endereco.numero}
+        `)
+    }catch (error) {
+        console.log('DEU RUIM MANE!', error)
+    }
+}
+
+
+/*const usuarioPromise = obterUsuario()
 
 usuarioPromise
     .then((usuario) =>{
