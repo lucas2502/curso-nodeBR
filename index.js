@@ -1,22 +1,28 @@
+const util = require('util')//importando um módulo interno do node.js
+const obterEnderecoAsysn = util.promisify(obterEndereco)
 
 
-const obterUsuario = (callback) => {
-    setTimeout(() => {
-        return callback(null, {
-            id: 1,
-            nome: 'Aladin',
-            dataNascimento: new Date()
-        })
-    }, 1000);
+const obterUsuario = () => {
+    return new Promise(resolvePromise = (resolve, reject) => {
+        setTimeout(() => {
+            return resolve({
+                id: 1,
+                nome: 'Aladin',
+                dataNascimento: new Date()
+            })
+        }, 1000);
+    })
 }
 
-const obterTelefone = (idUsuario, callback) => {
-    setTimeout(() => {
-        return callback(null, {
-            telefone: '11009977',
-            ddd: '11'
-        })
-    }, 2000);
+const obterTelefone = (idUsuario) => {
+    return new Promise(resolvePromise = (resolve, reject) => {    
+        setTimeout(() => {
+            return resolve({
+                telefone: '11009977',
+                ddd: '11'
+            })
+        }, 2000);
+    })
 }
 
 const obterEndereco = (idUsuario, callback) => {
@@ -29,11 +35,45 @@ const obterEndereco = (idUsuario, callback) => {
 
 }
 
-const resolverUsuario = (erro, usuario) => {
-    console.log('usuario:', usuario)
-}
+const usuarioPromise = obterUsuario()
 
-obterUsuario(function resolverUsuario(error, usuario){
+usuarioPromise
+    .then((usuario) =>{
+        return obterTelefone(usuario.id)
+            .then(resolverTelefone = (result) => {
+                return {
+                    usuario: {
+                        nome: usuario.nome,
+                        id: usuario.id
+                    },
+                    telefone: result
+                }
+            })
+    })
+    .then((resultado) => {
+        const endereco = obterEnderecoAsysn(resultado.usuario.id)
+        return endereco.then(resolverEndereco = (result) => {
+            return {
+                usuario: resultado.usuario,
+                telefone: resultado.telefone,
+                endereco: result
+            }
+        })
+    })
+
+    .then((resultado) => {
+        console.log(`
+            Nome: ${resultado.usuario.nome}
+            Endereco: ${resultado.endereco.rua}, ${resultado.endereco.numero}
+            Telefone: ${resultado.telefone.ddd}, ${resultado.telefone.telefone}
+        `)
+    })
+    .catch((error) => {
+        console.log('DEU RUIM', error)
+    })
+
+
+/*obterUsuario(function resolverUsuario(error, usuario){
     if(error) {
         console.error('DEU RUIM em USUARIO', error)
         return;
@@ -59,7 +99,7 @@ obterUsuario(function resolverUsuario(error, usuario){
     })
     
 
-})
+})*/
 
 //const telefone = obterTelefone(usuario.id)
 
