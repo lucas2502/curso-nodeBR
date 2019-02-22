@@ -43,9 +43,9 @@ async function main(){
             console.log(`index: ${index}`, lista.length)
             return item.name.toLowerCase().indexOf('lars') !== -1
         })
-       
+    
     } catch (error){
-        console.error('DEU RUIM'. error)
+        console.error('DEU RUIM', error)
     }
 }
 
