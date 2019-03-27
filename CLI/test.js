@@ -12,15 +12,20 @@ const DEFAULR_ITEM_CADASTRAR = {
 }
 
 describe('suite de manipulação de Herois', () => {
-    it('deve pesquisar um heroi usando arquivos', async () =>{
-        const expected = DEFAULR_ITEM_CADASTRAR
-        const resultado = await database.listar(expected.id)
-        deepEqual(resultado, expected)
+    before(() => {
+        await database.cadastrar(DEFAULR_ITEM_CADASTRAR)
     })
     
-    /*it('deve cadastrar um heroi, usando arquivos', async () => {
+    it('deve pesquisar um heroi usando arquivos', async () =>{
         const expected = DEFAULR_ITEM_CADASTRAR
-
-        ok(null, expected)
-    })*/
+        const [resultado] = await database.listar(expected.id)
+        
+        deepEqual(resultado, expected)
+    })
+    it('deve cadastrar um heroi, usando arquivos', async () => {
+        const expected = DEFAULR_ITEM_CADASTRAR
+        const resultado = await database.cadastrar(DEFAULR_ITEM_CADASTRAR)
+        const [actual] = await database.listar(DEFAULR_ITEM_CADASTRAR.id)
+        deepEqual(null, expected)
+    })
 })
