@@ -2,4 +2,14 @@
     "nome": "Flash",
     "poder": "Speed",
     "id": 1
+},
+{
+    "nome": "Batman",
+    "poder": "Money",
+    "id": 2
+},
+{
+    "nome": "Renato",
+    "poder": "Mega Rola",
+    "id": 3
 }]
