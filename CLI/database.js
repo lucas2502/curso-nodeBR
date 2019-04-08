@@ -1,6 +1,6 @@
 const {
     readFile,
-    writeFile
+    writeFileAsysnc
 } = require('fs')
 
 const { 
@@ -26,20 +26,45 @@ class Database {
         const id = heroi.id <= 2 ? heroi.id : Date.now()
         
         const heroiComId = {
-            id,
-            ...heroi
+            ...heroi,
+            id
         }
-        const dadosFinal = [
-            ...dados,
-            heroiComId
-        ]
-        const resultado = await this.escreverArquivo(dadosFinal)
-        return resultado
+        return await this.escreverArquivo([...dados, heroiComId]);
     }
     async listar(id){
         const dados = await this.obterDadosArquivo()
-        const dadosFiltrtados = dados.filter(item =>(id ?  (item.id === id) : true))
-        return dadosFiltrtados
+        return dados.filter(item =>(id ?  (item.id === id) : true))
+    }
+
+    async remover(id){
+        if(!id){
+            await this.escreverArquivo([]);
+            return true;
+        }
+        
+        const dados = await this.obterDadosArquivo()
+        const indice = dados.findIndex(item => item.id === parseInt(id))
+        if (indice === -1) {
+            throw Error('O usuario informado nao existe')
+        }
+        const atual = dados[indice];
+        dados.splice(indice, 1);
+        await this.escreverArquivo(dados);
+        return true;
+    }
+
+    async atualizar(id, modificacoes) {
+        const dados = await this.obterDadosArquivo()
+        const indice = dados.findIndex(item => item.id === parseInt(id))
+        if(indice === -1){
+            throw Error('O heroi informado nao existe')
+        }
+        const atual = dados[indice]
+        dados.splice(indice, 1)
+        const objAtualizado = JSON.parse(JSON.stringify(atualizacoes));
+        const dadoAtualizado = Object.assign({}, atual, objAtualizado);
+    
+        return await this.escreverArquivo([...dados, dadoAtualizado]);
     }
 }
 
