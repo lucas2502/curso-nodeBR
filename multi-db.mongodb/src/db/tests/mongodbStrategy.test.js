@@ -22,4 +22,11 @@ describe('MongoDB suite de testes', function () {
         const { nome, poder} = await context.create(MOCK_HEROIS_CADASTRAR)
         assert.deepEqual({ nome,poder}, MOCK_HEROIS_CADASTRAR )
     })
+    it('listar', async () => {
+        const [{nome, poder}] = await context.read({nome: MOCK_HEROIS_CADASTRAR})
+        const result = {
+            nome, poder
+        }
+        assert.deepEqual(result, MOCK_HEROIS_CADASTRAR)
+    })
 })
