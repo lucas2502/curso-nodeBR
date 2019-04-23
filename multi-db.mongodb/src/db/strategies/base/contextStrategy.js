@@ -1,4 +1,4 @@
-const ICrud = require('./../interfaces/interfaceCrud')
+const ICrud = require('../interfaces/interfaceCrud')
 
 class ContextStrategy extends ICrud {
     constructor(strategy) {
@@ -6,8 +6,8 @@ class ContextStrategy extends ICrud {
         this._database = strategy
     }
 
-    create(item) {
-        return this._database.create(item)
+    create(item, skip, limit) {
+        return this._database.create(item, skip, limit)
     }
     
     read(item) {
@@ -21,8 +21,13 @@ class ContextStrategy extends ICrud {
     delete(id) {
         return this._database.delete(id)
     }
+    
     isConnected() {
         return this._database.isConnected()
+    }
+
+    connect() {
+        return this._database.connect()
     }
 
 }
