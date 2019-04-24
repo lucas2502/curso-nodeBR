@@ -1,4 +1,5 @@
 const BaseRoute = require('./base/baseRoute')
+const Joi = require('joi')
 
 class HeroRoutes extends BaseRoute {
     constructor(db) {
@@ -10,6 +11,18 @@ class HeroRoutes extends BaseRoute {
         return {
             path: '/herois',
             method: 'GET',
+            config: {
+                validate: {
+                    failAction: (request, headers, erro) => {
+                        throw erro;
+                    },
+                    query: {
+                        skip: Joi.number().integer().default(0),
+                        limit: Joi.number().integer().default(10),
+                        nome: Joi.string().min(3).max(100)
+                    }
+                }
+            },
             handler: (request, headers) => {
                 try{
                     const {
@@ -17,8 +30,12 @@ class HeroRoutes extends BaseRoute {
                         limit,
                         nome
                     } = request.query
+                    
+                    const query = nome ? {
+                        nome: {$regex: `.*${nome}*.`}
+                    } : {}
 
-                    return this.db.read(query, parseInt(skip), parseInt(limit))
+                    return this.db.read(nome ? query : {}, skip, limit)
                 } catch (error) {
                     console.log("error", error)
                     return "Internal ERROR"
