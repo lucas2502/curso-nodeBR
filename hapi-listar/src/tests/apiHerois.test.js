@@ -122,5 +122,17 @@ describe('Suite de testes da API Heroes', function () {
         assert.deepEqual(dados.message, 'Heroi atualizado com sucesso!')
     })
 
-    
+    it('Remover DELETE - /herois/:id', async () => {
+        const _id = MOCK_ID
+        const result = await app.inject({
+            methhod: 'DELETE',
+            url: `/herois/${_id}`
+        })
+        const statusCode = result.statusCode
+        const dados = JSON.parse(result.playload)
+
+        assert.ok(statusCode === 200)
+        assert.deepEqual(dados.message, 'Heroi Removido com sucesso!')
+    })
+
 })
