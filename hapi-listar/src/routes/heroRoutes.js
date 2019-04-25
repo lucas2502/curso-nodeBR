@@ -31,14 +31,12 @@ class HeroRoutes extends BaseRoute {
                         nome
                     } = request.query
                     
-                    const query = nome ? {
+                    const query = {
                         nome: {$regex: `.*${nome}*.`}
-                    } : {}
-
-                    return {
-                        message: 'Heroi cadastrar com sucesso!',
-                        _id: result._id
                     }
+
+                    return this.db.read(nome ? query : {}, skip, limit)
+
                 } catch (error) {
                     console.log("error", error)
                     return "Internal ERROR"
@@ -53,7 +51,6 @@ class HeroRoutes extends BaseRoute {
             method: 'POST',
             config: {
                 validate: {
-                    failAction,
                     payload: {
                         nome: Joi.string().required().min(3).max(100),
                         poder: Joi.string().required().min(2).max(100)
@@ -71,11 +68,57 @@ class HeroRoutes extends BaseRoute {
                         poder
                     })
                     return {
-                        message: 'Heroi cadastrado com sucesso!'
+                        message: 'Heroi cadastrado com sucesso!',
+                        _id: result._id
                     }
                 } catch(error) {
                     console.log('ERROR', error)
                     return "internal error!"
+                }
+            }
+        }
+    }
+
+    update() {
+        return {
+            path: '/herois/{id}',
+            method: 'PATCH',
+            config: {
+                validate: {
+                    params: {
+                        id: Joi.string().required()
+                    },
+                    payload: {
+                        nome: Joi.string().min(3).max(100),
+                        poder: Joi.string().min(2).max(100)
+                    }
+                }
+            },
+            handler: async (request) => {
+                try {
+                    const {
+                        id
+                    } = request.params;
+
+                    const {
+                        payload
+                    } = request
+
+                    const dadosString = JSON.stringify(payload)
+                    const dados = JSON.parse(dadosString)
+
+                    const result = await this.db.update(id, dados)
+
+                    if (result.nModified !== 1) return {
+                        message: 'Não foi possivel atualizar'
+                    }
+                    return {
+                        message : 'Heroi atualizado com sucesso!'
+                    }
+
+                } catch (error) {
+                    console.error('ERROR', error)
+                    return 'Erro Interno!'
                 }
             }
         }
