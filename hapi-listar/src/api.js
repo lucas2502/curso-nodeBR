@@ -6,6 +6,10 @@ const MongoDb = require('./db/strategies/mongodb/mongoDbStrategy')
 const HeroiSchema = require('./db/strategies/mongodb/schemas/heroSchema')
 const HeroRoute = require('./routes/heroRoutes')
 
+const HapiSwagger = require('hapi-swagger')
+const Vision = require('vision')
+const Inert = require('inert')
+
 const app = new Hapi.Server({
     port: 5000
 })
@@ -17,6 +21,22 @@ const mapRoutes = (intance, methods) => {
 async function main() {
     const connection = MongoDb.connect()
     const context = new Context(new MongoDb(connection, HeroiSchema))
+
+    const swaggerOptions = {
+        info: {
+            title: 'API Herois - #CursoNodeBR',
+            version: 'v1.0'
+        },
+        lang: 'pt'
+    }
+    await app.register([
+        Vision,
+        Inert,
+        {
+            plugin: HapiSwagger,
+            options: swaggerOptions
+        }
+    ])
 
     app.route([
         ...mapRoutes(new HeroRoute(context), HeroRoute.methods())

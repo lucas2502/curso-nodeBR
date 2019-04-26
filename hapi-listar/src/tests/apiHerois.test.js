@@ -73,7 +73,7 @@ describe('Suite de testes da API Heroes', function () {
     })
 
     it('listar /heroi - deve filtrar em item', async () => {
-        const NAME = 'Batman'
+        const NAME = MOCK_HEROI_INICIAL.nome
         const result = await app.inject({
             method: 'GET',
             url: `/herois?skip=0&limit=1000&nome=${NAME}`
