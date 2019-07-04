@@ -16,6 +16,7 @@ const USER = {
 
 class AuthRoutes extends BaseRoute {
     constructor(secret){
+        super()
         this.secret = secret
     }
 
@@ -24,6 +25,7 @@ class AuthRoutes extends BaseRoute {
             path: '/login',
             method: 'POST',
             config: {
+                auth: false,
                 tags: ['api'],
                 description: 'Obter token',
                 notes: 'faz login com user e senha do banco',
@@ -54,4 +56,4 @@ class AuthRoutes extends BaseRoute {
     }
 }
 
-modulde.exports = AuthRoutes
+module.exports = AuthRoutes
